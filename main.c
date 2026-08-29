@@ -1,8 +1,16 @@
 #include <stdio.h>
 #include <gtk/gtk.h>
-
-void writting_diary() {
-
+#include <time.h>
+void writting_diary(const char *text) {
+FILE *fp = fopen("diary.txt", "a");
+    if (fp == NULL) {
+        printf("Error opening diary.txt\n");
+        exit(1);
+    }
+    time_t t = time(NULL);
+    struct tm *now = localtime(&t);
+    fprintf(fp, "%d-%02d-%02d %02d:%02d:%02d\n",now->tm_year + 1900, now->tm_mon + 1, now->tm_mday);
+    fprintf(fp,"%s\n\n",text);
 
 }
 void history() {
@@ -16,9 +24,9 @@ void categories() {
 }
 
 int main() {
-    int choice,return_value= 1;
-    while (return_value != 0) {
-        return_value = 0;
+    int choice;
+    const char *text = NULL;
+
         printf("1-New Day\n");
         printf("2-History\n");
         printf("3-Search\n");
@@ -29,30 +37,24 @@ int main() {
         scanf("%d", &choice);
 
         if (choice == 1) {
-            writting_diary();
-            return_value=0;
+            writting_diary(&text);
         }
         else if (choice == 2) {
             history();
-            return_value=0;
         }
         else if (choice == 3) {
             search();
-            return_value=0;
         }
         else if (choice == 4) {
             categories();
-            return_value=0;
         }
         else if (choice == 5) {
             printf("Exiting...\n");
-            return_value=0;
             exit(0);
         }
         else {
-            return_value = 1;
             printf("Wrong Choice\n");
         }
-    }
+
         return 0;
 }
